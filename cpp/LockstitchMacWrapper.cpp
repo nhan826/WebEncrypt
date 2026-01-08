@@ -9,12 +9,18 @@
 #include <iostream>
 #include <algorithm>
 #include <filesystem>
+#include <iterator>
+#include <cstring>
 #include <stdio.h>
 #include <sys/stat.h>
+#include <climits>
 
 #ifdef __APPLE__
 #include <mach-o/dyld.h>
-#include <limits.h>
+#endif
+
+#ifdef __linux__
+#include <linux/limits.h>
 #endif
 
 using namespace std;
