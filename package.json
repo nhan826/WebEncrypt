@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "build": "node-gyp rebuild"
+    "build": "node-gyp rebuild",
+    "postinstall": "npm run build"
   },
   "keywords": ["encryption", "lockstitch", "security"],
   "author": "",
@@ -19,10 +20,11 @@
     "bcryptjs": "^2.4.3",
     "express-rate-limit": "^7.1.5",
     "helmet": "^7.1.0",
-    "validator": "^13.11.0"
+    "validator": "^13.11.0",
+    "node-gyp": "^10.0.1",
+    "node-addon-api": "^7.0.0"
   },
   "devDependencies": {
-    "node-gyp": "^10.0.1"
   },
   "engines": {
     "node": ">=18.0.0"
