@@ -35,7 +35,7 @@ export default function TextEncryption() {
       const token = localStorage.getItem('auth_token')
       const endpoint = isEncrypting ? '/api/encrypt/text' : '/api/decrypt/text'
       
-      const response = await fetch(`${process.env.API_URL || 'http://localhost:3001'}${endpoint}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
