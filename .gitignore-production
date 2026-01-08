@@ -1,0 +1,39 @@
+# Production .gitignore - excludes source code
+# Use this when creating production repository
+
+# CRITICAL: Never include C++ source in production repo
+backend/cpp/
+Lockstitch/
+Bridge/
+
+# Only include the compiled binary
+!backend/build/Release/lockstitch.node
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Development files
+node_modules
+.next
+out
+build
+dist
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Uploads (temporary files)
+backend/uploads/*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation that reveals implementation details
+SETUP_INSTRUCTIONS.md
+Lockstich_api_insnstruction.txt
+README.md

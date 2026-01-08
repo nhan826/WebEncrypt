@@ -1,0 +1,22 @@
+# Don't include C++ source in Docker builds
+backend/cpp/*.cpp
+backend/cpp/*.h
+backend/cpp/Lockstitch.cpp
+backend/cpp/LockstitchMacWrapper.cpp
+backend/cpp/Lockstitch.h
+
+# Only include compiled binary
+!backend/build/Release/lockstitch.node
+
+# Exclude development files
+node_modules
+.git
+.env
+*.log
+.next
+backend/uploads/*
+
+# Documentation that reveals implementation
+*.md
+SETUP_INSTRUCTIONS.md
+Lockstich_api_insnstruction.txt
