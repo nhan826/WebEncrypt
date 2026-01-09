@@ -40,13 +40,16 @@ export default function TextEncryption() {
     try {
       const token = localStorage.getItem('auth_token')
       const endpoint = isEncrypting ? '/api/encrypt/text' : '/api/decrypt/text'
+      const body = isEncrypting
+        ? { text: inputText, password: userPassword }
+        : { encryptedText: inputText, password: userPassword };
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ text: inputText, password: userPassword }),
+        body: JSON.stringify(body),
       })
 
       const data = await response.json()
