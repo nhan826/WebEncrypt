@@ -11,6 +11,7 @@ export default function TextEncryption() {
   const [error, setError] = useState('')
   const [lastEncryptedText, setLastEncryptedText] = useState('')
   const [lastDecryptedText, setLastDecryptedText] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
 
   // Auto-populate when switching modes (like Mac app)
   useEffect(() => {
