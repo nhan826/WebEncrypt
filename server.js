@@ -26,7 +26,7 @@ try {
 const app = express();
 const PORT = process.env.PORT || 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'change-this-secret-key';
-const APP_PASSWORD_HASH = bcrypt.hashSync(process.env.APP_PASSWORD || 'demo123', 10);
+const APP_PASSWORD = process.env.APP_PASSWORD || 'demo123';
 
 // Middleware
 app.use(cors({
@@ -95,9 +95,7 @@ app.post('/api/auth/login', (req, res) => {
     return res.status(400).json({ error: 'Password required' });
   }
 
-  const isValid = bcrypt.compareSync(password, APP_PASSWORD_HASH);
-
-  if (isValid) {
+  if (password === APP_PASSWORD) {
     const token = jwt.sign({ authenticated: true }, JWT_SECRET, { expiresIn: '24h' });
     res.json({ token, message: 'Login successful' });
   } else {
