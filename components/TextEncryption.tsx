@@ -127,37 +127,6 @@ export default function TextEncryption() {
           <p className="text-xs text-gray-500 mt-1">Password length: {userPassword.length} chars</p>
         </div>
       </div>
-          {isEncrypting ? 'Enter text to encrypt:' : 'Enter encrypted text:'}
-        </label>
-        <textarea
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          className="mac-textarea mac-input w-full h-40 px-4 py-3 text-gray-900 resize-none"
-          placeholder={isEncrypting ? 'Type your message here...' : 'Paste encrypted text here...'}
-        />
-        <label className="block text-sm font-semibold text-gray-700 mt-2">Password for encryption/decryption:</label>
-        <div className="relative">
-          <input
-            type={showPassword ? "text" : "password"}
-            value={userPassword}
-            onChange={(e) => setUserPassword(e.target.value)}
-            className="mac-input w-full px-4 py-2 text-gray-900 border rounded pr-10"
-            placeholder="Enter a password..."
-          />
-          <button
-            type="button"
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-            onClick={() => setShowPassword((v) => !v)}
-            tabIndex={-1}
-          >
-            {showPassword ? (
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10 0-1.657.402-3.22 1.125-4.575m2.1-2.1A9.956 9.956 0 0112 3c5.523 0 10 4.477 10 10 0 1.657-.402 3.22-1.125 4.575m-2.1 2.1A9.956 9.956 0 0112 21c-5.523 0-10-4.477-10-10 0-1.657.402-3.22 1.125-4.575" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3l18 18M9.88 9.88A3 3 0 0112 9c1.657 0 3 1.343 3 3 0 .512-.13.995-.36 1.41m-1.41 1.41A3 3 0 0112 15c-1.657 0-3-1.343-3-3 0-.512.13-.995.36-1.41m1.41-1.41A3 3 0 0112 9c1.657 0 3 1.343 3 3 0 .512-.13.995-.36 1.41m-1.41 1.41A3 3 0 0112 15c-1.657 0-3-1.343-3-3 0-.512.13-.995.36-1.41m1.41-1.41A3 3 0 0112 9c1.657 0 3 1.343 3 3 0 .512-.13.995-.36 1.41m-1.41 1.41A3 3 0 0112 15c-1.657 0-3-1.343-3-3 0-.512.13-.995.36-1.41" /></svg>
-            )}
-          </button>
-        </div>
-      </div>
 
       {/* Action Button */}
       <button
