@@ -160,3 +160,5 @@ export default function TextEncryption() {
         )}
       </button>
     </div>
+  )
+}
