@@ -33,8 +33,11 @@ app.set('trust proxy', 1);
 
 // Middleware
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? process.env.FRONTEND_URL 
+  origin: process.env.NODE_ENV === 'production'
+    ? [
+        'https://web-encrypt-git-main-nathanael-hans-projects.vercel.app',
+        'https://web-encrypt-three.vercel.app'
+      ]
     : 'http://localhost:3000',
   credentials: true,
   exposedHeaders: ['Content-Disposition', 'Content-Type']
