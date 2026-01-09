@@ -28,6 +28,9 @@ const PORT = process.env.PORT || 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'change-this-secret-key';
 const APP_PASSWORD = process.env.APP_PASSWORD || 'demo123';
 
+// Fix express-rate-limit proxy error in production
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
