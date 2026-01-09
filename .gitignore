@@ -37,9 +37,11 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+
 # Backend - DO NOT COMMIT (deploy separately)
 backend/
 !backend/.gitkeep
+!backend/server.js
 
 # Temporary - keep for local development
 # Remove the '!' above when ready to deploy
