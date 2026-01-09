@@ -28,9 +28,6 @@ const PORT = process.env.PORT || 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'change-this-secret-key';
 const APP_PASSWORD = process.env.APP_PASSWORD || 'demo123';
 
-// Fix express-rate-limit proxy error in production
-app.set('trust proxy', 1);
-
 // Middleware
 app.use(cors({
   origin: process.env.NODE_ENV === 'production'
@@ -96,7 +93,8 @@ app.get('/api/health', (req, res) => {
 // Login
 app.post('/api/auth/login', (req, res) => {
   const { password } = req.body;
-  // DEBUG: Log received password and APP_PASSWORD
+
+  // Debug logging
   console.log('LOGIN DEBUG: received password:', password);
   console.log('LOGIN DEBUG: APP_PASSWORD from env:', APP_PASSWORD);
 
