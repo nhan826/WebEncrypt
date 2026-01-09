@@ -24,6 +24,7 @@ try {
 }
 
 const app = express();
+app.set('trust proxy', 1); // Required for express-rate-limit behind Railway/Cloud proxy
 const PORT = process.env.PORT || 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'change-this-secret-key';
 const APP_PASSWORD = process.env.APP_PASSWORD || 'demo123';
