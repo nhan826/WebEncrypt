@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 
 export default function TextEncryption() {
   const [inputText, setInputText] = useState('')
+  const [userPassword, setUserPassword] = useState('')
   const [outputText, setOutputText] = useState('')
   const [isEncrypting, setIsEncrypting] = useState(true)
   const [loading, setLoading] = useState(false)
@@ -31,28 +32,32 @@ export default function TextEncryption() {
     setLoading(true)
     setError('')
 
+    if (!userPassword.trim()) {
+      setError('Please enter a password for encryption/decryption')
+      setLoading(false)
+      return
+    }
     try {
       const token = localStorage.getItem('auth_token')
       const endpoint = isEncrypting ? '/api/encrypt/text' : '/api/decrypt/text'
-      
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ text: inputText }),
+        body: JSON.stringify({ text: inputText, password: userPassword }),
       })
 
       const data = await response.json()
 
       if (response.ok) {
-        setOutputText(data.result)
+        setOutputText(data.encryptedText || data.decryptedText || data.result)
         // Save to history
         if (isEncrypting) {
-          setLastEncryptedText(data.result)
+          setLastEncryptedText(data.encryptedText || data.result)
         } else {
-          setLastDecryptedText(data.result)
+          setLastDecryptedText(data.decryptedText || data.result)
         }
       } else {
         setError(data.error || 'Processing failed')
@@ -116,6 +121,14 @@ export default function TextEncryption() {
           onChange={(e) => setInputText(e.target.value)}
           className="mac-textarea mac-input w-full h-40 px-4 py-3 text-gray-900 resize-none"
           placeholder={isEncrypting ? 'Type your message here...' : 'Paste encrypted text here...'}
+        />
+        <label className="block text-sm font-semibold text-gray-700 mt-2">Password for encryption/decryption:</label>
+        <input
+          type="password"
+          value={userPassword}
+          onChange={(e) => setUserPassword(e.target.value)}
+          className="mac-input w-full px-4 py-2 text-gray-900 border rounded"
+          placeholder="Enter a password..."
         />
       </div>
 
