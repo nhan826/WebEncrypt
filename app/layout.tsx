@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import Head from 'next/head'
 
 export const metadata: Metadata = {
   title: 'THREEFOLD Encryption',
@@ -13,9 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
+      <Head>
         <link rel="icon" type="image/png" href="/favicon.png" />
-      </head>
+      </Head>
       <body>{children}</body>
     </html>
   )
