@@ -13,11 +13,9 @@ export default function FileEncryption() {
   const [originalPreview, setOriginalPreview] = useState<string | null>(null)
   const [encryptedPreview, setEncryptedPreview] = useState<string | null>(null)
   const [decryptedPreview, setDecryptedPreview] = useState<string | null>(null)
-  const [lastEncryptedFile, setLastEncryptedFile] = useState<{blob: Blob, name: string} | null>(null)
-  const [lastDecryptedFile, setLastDecryptedFile] = useState<{blob: Blob, name: string} | null>(null)
+  const [lastEncryptedFile, setLastEncryptedFile] = useState<{blob: Blob, name: string, preview: string | null} | null>(null)
   const [processedFile, setProcessedFile] = useState<{blob: Blob, filename: string} | null>(null)
   const [showPassword, setShowPassword] = useState(false)
-  const [savedEncryptedPreview, setSavedEncryptedPreview] = useState<string | null>(null)
 
   // DEBUG: Track processedFile changes
   useEffect(() => {
@@ -27,40 +25,36 @@ export default function FileEncryption() {
     }
   }, [processedFile])
 
-  // Auto-load last file when switching modes (like Mac app)
+  // Auto-load last encrypted file when switching to Decrypt mode
   useEffect(() => {
-    // Clear previous processed file when switching modes
     setProcessedFile(null)
     setResultMessage('')
     setError('')
-    
-    if (!isEncrypting && lastEncryptedFile) {
-      // Switching to decrypt - load encrypted file
-      const file = new File([lastEncryptedFile.blob], lastEncryptedFile.name, { type: 'application/octet-stream' })
-      setSelectedFile(file)
-      // Show encrypted preview - use the saved one from encryption
-      if (savedEncryptedPreview) {
-        setEncryptedPreview(savedEncryptedPreview)
-      }
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const preview = e.target?.result as string
-        setOriginalPreview(preview)
-      }
-      reader.readAsDataURL(file)
-    } else if (isEncrypting && lastDecryptedFile) {
-      // Switching to encrypt - load decrypted file
-      const file = new File([lastDecryptedFile.blob], lastDecryptedFile.name)
-      setSelectedFile(file)
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        setOriginalPreview(e.target?.result as string)
+    setDecryptedPreview(null)
+    if (!isEncrypting) {
+      // Switching to decrypt: only show last encrypted file
+      if (lastEncryptedFile) {
+        const file = new File([lastEncryptedFile.blob], lastEncryptedFile.name, { type: 'application/octet-stream' })
+        setSelectedFile(file)
+        setEncryptedPreview(lastEncryptedFile.preview || null)
+        // Show original preview for reference
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          setOriginalPreview(e.target?.result as string)
+        }
+        reader.readAsDataURL(file)
+      } else {
+        setSelectedFile(null)
+        setOriginalPreview(null)
         setEncryptedPreview(null)
-        setSavedEncryptedPreview(null)
       }
-      reader.readAsDataURL(file)
+    } else {
+      // Switching to encrypt: reset everything for new flow
+      setSelectedFile(null)
+      setOriginalPreview(null)
+      setEncryptedPreview(null)
     }
-  }, [isEncrypting, lastEncryptedFile, lastDecryptedFile])  // Removed savedEncryptedPreview from deps
+  }, [isEncrypting, lastEncryptedFile])
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -290,7 +284,6 @@ export default function FileEncryption() {
     // Generate encrypted preview for visual feedback during encryption
     let encryptedPreviewUrl: string | null = null
     if (isEncrypting && originalPreview) {
-      // Generate preview from original for images
       if (selectedFile.type.startsWith('image/')) {
         await new Promise<void>((resolve) => {
           const img = new Image()
@@ -299,7 +292,6 @@ export default function FileEncryption() {
             const maxSize = 800
             let width = img.width
             let height = img.height
-            
             if (width > maxSize || height > maxSize) {
               if (width > height) {
                 height = (height / width) * maxSize
@@ -309,16 +301,13 @@ export default function FileEncryption() {
                 height = maxSize
               }
             }
-            
             canvas.width = width
             canvas.height = height
             const ctx = canvas.getContext('2d')
-            
             if (ctx) {
               ctx.drawImage(img, 0, 0, width, height)
               const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
               const data = imageData.data
-              
               for (let i = 0; i < data.length; i += 4) {
                 const seed = (i / 4) * 2654435761
                 data[i] = (seed * 123) % 256
@@ -326,11 +315,9 @@ export default function FileEncryption() {
                 data[i + 2] = (seed * 789) % 256
                 data[i + 3] = 255
               }
-              
               ctx.putImageData(imageData, 0, 0)
               encryptedPreviewUrl = canvas.toDataURL('image/jpeg', 0.9)
               setEncryptedPreview(encryptedPreviewUrl)
-              setSavedEncryptedPreview(encryptedPreviewUrl)
             }
             resolve()
           }
@@ -338,7 +325,6 @@ export default function FileEncryption() {
           img.src = originalPreview
         })
       } else if (selectedFile.type.startsWith('video/')) {
-        // Generate from video thumbnail
         await new Promise<void>((resolve) => {
           const video = document.createElement('video')
           video.src = originalPreview
@@ -346,18 +332,15 @@ export default function FileEncryption() {
           video.muted = true
           video.playsInline = true
           video.preload = 'metadata'
-          
           video.addEventListener('seeked', () => {
             const canvas = document.createElement('canvas')
             canvas.width = video.videoWidth
             canvas.height = video.videoHeight
             const ctx = canvas.getContext('2d')
-            
             if (ctx && video.videoWidth > 0) {
               ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
               const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
               const data = imageData.data
-              
               for (let i = 0; i < data.length; i += 4) {
                 const seed = (i / 4) * 2654435761
                 data[i] = (seed * 123) % 256
@@ -365,42 +348,30 @@ export default function FileEncryption() {
                 data[i + 2] = (seed * 789) % 256
                 data[i + 3] = 255
               }
-              
               ctx.putImageData(imageData, 0, 0)
               encryptedPreviewUrl = canvas.toDataURL('image/jpeg', 0.9)
-              console.log('Generated encrypted video preview:', canvas.width, 'x', canvas.height)
               setEncryptedPreview(encryptedPreviewUrl)
-              setSavedEncryptedPreview(encryptedPreviewUrl)
-              
-              video.pause()
-              video.src = ''
-              video.remove()
             }
+            video.pause()
+            video.src = ''
+            video.remove()
             resolve()
           }, { once: true })
-          
           video.addEventListener('error', (e) => {
             console.error('Video load error:', e)
             resolve()
           })
-          
           video.load()
-          setTimeout(() => resolve(), 2000) // Timeout fallback
+          setTimeout(() => resolve(), 2000)
         })
       } else if (selectedFile.type === 'application/pdf') {
-        // For PDFs, create a simple distorted placeholder
-        // Since we can't easily render PDF in browser without external libraries,
-        // we'll create a colorful noise pattern as the encrypted preview
         const canvas = document.createElement('canvas')
         canvas.width = 400
         canvas.height = 500
         const ctx = canvas.getContext('2d')
-        
         if (ctx) {
-          // Create noise pattern
           const imageData = ctx.createImageData(canvas.width, canvas.height)
           const data = imageData.data
-          
           for (let i = 0; i < data.length; i += 4) {
             const seed = (i / 4) * 2654435761
             data[i] = (seed * 123) % 256
@@ -408,12 +379,9 @@ export default function FileEncryption() {
             data[i + 2] = (seed * 789) % 256
             data[i + 3] = 255
           }
-          
           ctx.putImageData(imageData, 0, 0)
           encryptedPreviewUrl = canvas.toDataURL('image/jpeg', 0.9)
-          console.log('Generated encrypted PDF preview:', canvas.width, 'x', canvas.height)
           setEncryptedPreview(encryptedPreviewUrl)
-          setSavedEncryptedPreview(encryptedPreviewUrl)
         }
       }
     }
@@ -514,17 +482,10 @@ export default function FileEncryption() {
         // Store file for download button
         setProcessedFile({ blob: finalBlob, filename })
         setResultMessage(`Success! File ready for download: ${filename}`)
-        
         // Save to history for switching modes
         if (isEncrypting) {
-          setLastEncryptedFile({ blob: finalBlob, name: filename })
-          // Save the encrypted preview for consistency when switching to decrypt mode
-          if (encryptedPreviewUrl) {
-            setSavedEncryptedPreview(encryptedPreviewUrl)
-          }
+          setLastEncryptedFile({ blob: finalBlob, name: filename, preview: encryptedPreviewUrl })
         }
-        // Note: We don't save lastDecryptedFile because after decryption,
-        // the user typically downloads the file rather than re-encrypting it
       } else {
         const data = await response.json()
         setError(data.error || 'Processing failed')
@@ -545,12 +506,10 @@ export default function FileEncryption() {
     setResultMessage('')
     setError('')
     setProcessedFile(null)
-    setSavedEncryptedPreview(null)
   }
 
   const downloadFile = () => {
     if (!processedFile) return
-    
     const url = window.URL.createObjectURL(processedFile.blob)
     const a = document.createElement('a')
     a.href = url
@@ -559,6 +518,12 @@ export default function FileEncryption() {
     a.click()
     document.body.removeChild(a)
     window.URL.revokeObjectURL(url)
+    // After download, reset for new flow if in decrypt mode
+    if (!isEncrypting) {
+      setTimeout(() => {
+        setIsEncrypting(true)
+      }, 500)
+    }
   }
 
   return (
@@ -593,31 +558,33 @@ export default function FileEncryption() {
         </button>
       </div>
 
-      {/* File Upload Section */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <label className="block">
-          <span className="text-sm font-medium text-gray-700 mb-2 block">
-            Select File
-          </span>
-          <input
-            type="file"
-            accept="image/*,video/*,application/pdf,.claudo"
-            onChange={handleFileSelect}
-            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
-          />
-        </label>
-        {selectedFile && (
-          <div className="mt-3 flex items-center justify-between bg-gray-50 p-3 rounded">
-            <span className="text-sm text-gray-700">{selectedFile.name}</span>
-            <button
-              onClick={clearSelection}
-              className="text-red-600 hover:text-red-800 text-sm font-medium"
-            >
-              Clear
-            </button>
-          </div>
-        )}
-      </div>
+      {/* File Upload Section (only in Encrypt mode) */}
+      {isEncrypting && (
+        <div className="bg-white rounded-lg shadow p-6">
+          <label className="block">
+            <span className="text-sm font-medium text-gray-700 mb-2 block">
+              Select File
+            </span>
+            <input
+              type="file"
+              accept="image/*,video/*,application/pdf,.claudo"
+              onChange={handleFileSelect}
+              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+            />
+          </label>
+          {selectedFile && (
+            <div className="mt-3 flex items-center justify-between bg-gray-50 p-3 rounded">
+              <span className="text-sm text-gray-700">{selectedFile.name}</span>
+              <button
+                onClick={clearSelection}
+                className="text-red-600 hover:text-red-800 text-sm font-medium"
+              >
+                Clear
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Password Input */}
       <div className="bg-white rounded-lg shadow p-6">
