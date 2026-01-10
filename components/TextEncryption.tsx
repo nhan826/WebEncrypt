@@ -94,6 +94,30 @@ export default function TextEncryption() {
 
   return (
     <div className="space-y-6">
+      {/* Mode Toggle Tabs */}
+      <div className="flex justify-center space-x-4">
+        <button
+          onClick={() => setIsEncrypting(true)}
+          className={`px-6 py-2 rounded-lg font-medium transition-all ${
+            isEncrypting
+              ? 'bg-blue-600 text-white shadow-md'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          }`}
+        >
+          Encrypt
+        </button>
+        <button
+          onClick={() => setIsEncrypting(false)}
+          className={`px-6 py-2 rounded-lg font-medium transition-all ${
+            !isEncrypting
+              ? 'bg-blue-600 text-white shadow-md'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          }`}
+        >
+          Decrypt
+        </button>
+      </div>
+
       {/* Input Section */}
       <div className="space-y-2">
         <label className="block text-sm font-semibold text-gray-700">
@@ -189,13 +213,6 @@ export default function TextEncryption() {
               className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs"
             >
               Copy
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsEncrypting(!isEncrypting)}
-              className="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 text-xs"
-            >
-              {isEncrypting ? 'Decrypt this text' : 'Encrypt new text'}
             </button>
           </div>
         </div>
