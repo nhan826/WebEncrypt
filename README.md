@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # WebEncrypt - Secure Encryption Web Platform
 
 Modern web application for text and file encryption using the Lockstitch C++ encryption library.
@@ -16,21 +17,11 @@ Modern web application for text and file encryption using the Lockstitch C++ enc
 Before running the application, ensure you have:
 
 - **Node.js** (v18 or higher) - [Download](https://nodejs.org/)
-- **npm** or **yarn** package manager
-- **Python** (for node-gyp compilation)
-- **Xcode Command Line Tools** (macOS): `xcode-select --install`
-
-## Installation
-
 ### 1. Install Dependencies
 
 ```bash
 npm install
 ```
-
-### 2. Add Node.js Native Addon API
-
-```bash
 npm install node-addon-api
 ```
 
@@ -78,10 +69,35 @@ Then open [http://localhost:3000](http://localhost:3000) in your browser.
 ### Production Mode
 
 ```bash
+=======
+# WebEncrypt Backend
+
+**Private Repository** - Contains proprietary Lockstitch C++ encryption
+
+## Deployment
+
+This backend should be deployed to Railway, Render, or similar service.
+
+### Environment Variables Required:
+
+```
+JWT_SECRET=<generate with: openssl rand -base64 32>
+APP_PASSWORD=<your-secure-password>
+NODE_ENV=production
+FRONTEND_URL=https://your-frontend.vercel.app
+PORT=3001
+```
+
+### Build Commands:
+
+```bash
+npm install
+>>>>>>> 0b5076605bde260ba3fe2ef509d25c10e12c258a
 npm run build
 npm start
 ```
 
+<<<<<<< HEAD
 Backend runs separately:
 ```bash
 npm run server
@@ -97,26 +113,15 @@ WebEncrypt/
 │   └── globals.css       # Global styles
 ├── components/            # React components
 │   ├── TextEncryption.tsx
-│   └── FileEncryption.tsx
 ├── backend/              # Node.js + Express backend
 │   ├── cpp/             # C++ Lockstitch source files
-│   ├── server.js        # Express server
-│   ├── binding.gyp      # Node-gyp configuration
 │   └── lockstitch_wrapper.cpp  # C++ to Node.js bridge
 ├── public/              # Static assets
-└── package.json         # Dependencies
-```
 
 ## API Endpoints
 
 ### Authentication
 - `POST /api/auth/login` - Login with password
-
-### Text Operations
-- `POST /api/encrypt/text` - Encrypt text
-- `POST /api/decrypt/text` - Decrypt text
-
-### File Operations
 - `POST /api/encrypt/file` - Encrypt file (multipart/form-data)
 - `POST /api/decrypt/file` - Decrypt file (multipart/form-data)
 
@@ -140,23 +145,12 @@ All endpoints except `/api/auth/login` require JWT token in `Authorization: Bear
    xcode-select --install
    ```
 
-2. Clear build cache and rebuild:
-   ```bash
-   cd backend
    rm -rf build
    node-gyp clean
    node-gyp configure
-   node-gyp build
-   ```
-
 3. Check that `code.txt` exists in `backend/cpp/`
 
 ### Backend Connection Error
-
-- Ensure backend server is running on port 3001
-- Check `.env` configuration
-- Verify `API_URL` in `next.config.js`
-
 ### File Upload Issues
 
 - Check `backend/uploads` directory exists and is writable
@@ -178,3 +172,10 @@ Proprietary - All rights reserved
 ## Support
 
 For issues or questions, contact the development team.
+=======
+## Security
+
+- C++ source code remains on server only
+- Never deploy this to client-accessible platforms
+- Use strong JWT_SECRET in production
+>>>>>>> 0b5076605bde260ba3fe2ef509d25c10e12c258a

@@ -1,4 +1,5 @@
 # Dependencies
+<<<<<<< HEAD
 /node_modules
 /.pnp
 .pnp.js
@@ -56,3 +57,26 @@ backend/cpp/build/
 
 # Production environment file
 .env.production.local
+=======
+node_modules/
+npm-debug.log*
+
+# Environment
+.env
+.env.local
+
+# Uploads
+uploads/*
+!uploads/.gitkeep
+
+# Build artifacts (will rebuild on server)
+build/
+*.node
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+>>>>>>> 0b5076605bde260ba3fe2ef509d25c10e12c258a
