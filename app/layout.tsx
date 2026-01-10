@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import Head from 'next/head'
+// DO NOT use next/head in app/layout.tsx (App Router). Use <head> directly.
 
 export const metadata: Metadata = {
   title: 'THREEFOLD Encryption',
@@ -14,9 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <Head>
+      <head>
         <link rel="icon" type="image/png" href="/favicon.png" />
-      </Head>
+      </head>
       <body>{children}</body>
     </html>
   )

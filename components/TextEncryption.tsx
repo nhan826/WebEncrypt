@@ -138,7 +138,7 @@ export default function TextEncryption() {
             value={userPassword}
             onChange={(e) => setUserPassword(e.target.value)}
             placeholder="Enter encryption password"
-            className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full h-12 px-4 py-2 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
           <button
             type="button"
@@ -146,7 +146,7 @@ export default function TextEncryption() {
             className="absolute right-3 inset-y-0 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
             aria-label={showPassword ? 'Hide password' : 'Show password'}
             tabIndex={-1}
-            style={{ pointerEvents: 'auto' }}
+            style={{ pointerEvents: 'auto', height: '2.5rem' }}
           >
             {showPassword ? (
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
