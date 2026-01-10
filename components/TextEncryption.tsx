@@ -25,26 +25,33 @@ export default function TextEncryption() {
   }, [isEncrypting])
 
   const processText = async () => {
-    if (!inputText.trim()) {
-      setError('Please enter some text')
-      return
-    }
-
+    console.log('[TextEncryption] Encrypt/Decrypt button clicked')
+    console.log('[TextEncryption] inputText:', inputText)
+    console.log('[TextEncryption] userPassword:', userPassword)
+    console.log('[TextEncryption] isEncrypting:', isEncrypting)
     setLoading(true)
     setError('')
 
+    if (!inputText.trim()) {
+      setError('Please enter some text')
+      setLoading(false)
+      console.log('[TextEncryption] Error: No input text')
+      return
+    }
     if (!userPassword.trim()) {
       setError('Please enter a password for encryption/decryption')
       setLoading(false)
+      console.log('[TextEncryption] Error: No password')
       return
     }
     try {
       const token = localStorage.getItem('auth_token')
-      console.log('TextEncryption DEBUG: token before fetch:', token)
+      console.log('[TextEncryption] token before fetch:', token)
       const endpoint = isEncrypting ? '/api/encrypt/text' : '/api/decrypt/text'
       const body = isEncrypting
         ? { text: inputText, password: userPassword }
         : { encryptedText: inputText, password: userPassword };
+      console.log('[TextEncryption] Fetching:', endpoint, 'with body:', body)
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}${endpoint}`, {
         method: 'POST',
         headers: {
@@ -53,9 +60,9 @@ export default function TextEncryption() {
         },
         body: JSON.stringify(body),
       })
-
+      console.log('[TextEncryption] Response status:', response.status, response.statusText)
       const data = await response.json()
-
+      console.log('[TextEncryption] Response data:', data)
       if (response.ok) {
         setOutputText(data.encryptedText || data.decryptedText || data.result)
         // Save to history
@@ -64,12 +71,14 @@ export default function TextEncryption() {
         } else {
           setLastDecryptedText(data.decryptedText || data.result)
         }
+        console.log('[TextEncryption] Success:', data)
       } else {
         setError(data.error || 'Processing failed')
+        console.log('[TextEncryption] Error:', data.error || 'Processing failed')
       }
     } catch (err) {
       setError('Connection error. Please ensure the backend server is running.')
-      console.error('Encryption error:', err)
+      console.error('[TextEncryption] Encryption error:', err)
     } finally {
       setLoading(false)
     }
