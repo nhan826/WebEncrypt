@@ -76,8 +76,8 @@ export default function FileEncryption() {
           // Only generate distorted preview for .claudo files in decrypt mode
           if (file.name.endsWith('.claudo') && !isEncrypting) {
             // If we have a saved encrypted preview from previous encryption, use it
-            if (savedEncryptedPreview) {
-              setEncryptedPreview(savedEncryptedPreview)
+            if (lastEncryptedFile && lastEncryptedFile.preview) {
+              setEncryptedPreview(lastEncryptedFile.preview)
             } else {
               generateEncryptedPreview(preview, file.type)
             }
