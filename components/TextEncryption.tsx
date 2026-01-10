@@ -40,6 +40,7 @@ export default function TextEncryption() {
     }
     try {
       const token = localStorage.getItem('auth_token')
+      console.log('TextEncryption DEBUG: token before fetch:', token)
       const endpoint = isEncrypting ? '/api/encrypt/text' : '/api/decrypt/text'
       const body = isEncrypting
         ? { text: inputText, password: userPassword }
