@@ -56,6 +56,7 @@ interface EncryptedSegment {
 export default function SpeechEncryption() {
   const [isRecording, setIsRecording] = useState(false)
   const [isSupported, setIsSupported] = useState(true)
+  const [isIOS, setIsIOS] = useState(false)
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [segments, setSegments] = useState<EncryptedSegment[]>([])
@@ -69,12 +70,17 @@ export default function SpeechEncryption() {
   const segmentIdCounter = useRef(0)
 
   useEffect(() => {
-    // Check if Web Speech API is supported
+    // Check if Web Speech API is supported and detect iOS
     if (typeof window !== 'undefined') {
+      // iOS detection
+      const ua = window.navigator.userAgent
+      const isIOSDevice = /iPad|iPhone|iPod/.test(ua) || (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document)
+      setIsIOS(isIOSDevice)
+
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
       if (!SpeechRecognition) {
         setIsSupported(false)
-        setError('Speech recognition not supported in this browser. Try Chrome or Edge.')
+        setError('Speech recognition not supported in this browser. Try Chrome or Edge on desktop or Android. Not supported on iOS/Safari.')
       }
     }
   }, [])
@@ -156,6 +162,14 @@ export default function SpeechEncryption() {
       setError('Please enter a password first')
       return
     }
+    if (isIOS) {
+      setError('Speech recognition is not supported on iOS devices. Please use a desktop or Android browser.')
+      return
+    }
+    if (!isSupported) {
+      setError('Speech recognition is not supported in this browser.')
+      return
+    }
 
     setError('')
     // Don't clear segments - keep accumulating them
@@ -219,7 +233,15 @@ export default function SpeechEncryption() {
 
     recognition.onerror = (event: any) => {
       console.error('Speech recognition error:', event.error)
-      setError(`Recognition error: ${event.error}`)
+      if (event.error === 'not-allowed') {
+        setError('Microphone use not supported — please try another device')
+      } else if (event.error === 'denied') {
+        setError('Microphone access denied by the user. Please allow microphone permissions.')
+      } else if (event.error === 'no-speech') {
+        setError('No speech detected. Please try again.')
+      } else {
+        setError(`Recognition error: ${event.error}`)
+      }
       setIsRecording(false)
     }
 
@@ -300,6 +322,11 @@ export default function SpeechEncryption() {
 
   return (
     <div className="space-y-6">
+      {isIOS && (
+        <div className="bg-yellow-100 border border-yellow-300 text-yellow-800 px-4 py-3 rounded-lg">
+          Speech recognition is not supported on iOS devices. Please use a desktop or Android browser.
+        </div>
+      )}
       {/* Header */}
       <div className="text-center">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">Speech Encryption</h2>
