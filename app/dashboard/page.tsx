@@ -42,10 +42,10 @@ export default function Dashboard() {
 
         {/* Tab Navigation */}
         <div className="mac-window mb-6 p-2">
-          <div className="flex space-x-2">
+          <div className="flex flex-wrap space-x-2 sm:space-x-2">
             <button
               onClick={() => setActiveTab('text')}
-              className={`flex-1 px-6 py-3 rounded-lg font-medium transition-all ${
+              className={`flex-1 min-w-0 px-4 py-3 rounded-lg font-medium transition-all text-ellipsis whitespace-nowrap overflow-hidden ${
                 activeTab === 'text'
                   ? 'bg-blue-500 text-white shadow-lg'
                   : 'text-gray-600 hover:bg-gray-100'
@@ -60,7 +60,7 @@ export default function Dashboard() {
             </button>
             <button
               onClick={() => setActiveTab('files')}
-              className={`flex-1 px-6 py-3 rounded-lg font-medium transition-all ${
+              className={`flex-1 min-w-0 px-4 py-3 rounded-lg font-medium transition-all text-ellipsis whitespace-nowrap overflow-hidden ${
                 activeTab === 'files'
                   ? 'bg-blue-500 text-white shadow-lg'
                   : 'text-gray-600 hover:bg-gray-100'
@@ -75,7 +75,7 @@ export default function Dashboard() {
             </button>
             <button
               onClick={() => setActiveTab('speech')}
-              className={`flex-1 px-6 py-3 rounded-lg font-medium transition-all ${
+              className={`flex-1 min-w-0 px-4 py-3 rounded-lg font-medium transition-all text-ellipsis whitespace-nowrap overflow-hidden ${
                 activeTab === 'speech'
                   ? 'bg-blue-500 text-white shadow-lg'
                   : 'text-gray-600 hover:bg-gray-100'
