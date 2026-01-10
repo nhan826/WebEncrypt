@@ -169,6 +169,44 @@ export default function TextEncryption() {
           </span>
         )}
       </button>
+
+      {/* Output Section */}
+      {outputText && (
+        <div className="mt-6 p-4 bg-gray-100 rounded-lg shadow-inner">
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            {isEncrypting ? 'Encrypted text:' : 'Decrypted text:'}
+          </label>
+          <textarea
+            value={outputText}
+            readOnly
+            className="w-full h-32 px-4 py-3 text-gray-900 bg-gray-200 rounded resize-none cursor-pointer"
+            onClick={copyToClipboard}
+          />
+          <div className="flex items-center mt-2 space-x-2">
+            <button
+              type="button"
+              onClick={copyToClipboard}
+              className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs"
+            >
+              Copy
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsEncrypting(!isEncrypting)}
+              className="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 text-xs"
+            >
+              {isEncrypting ? 'Decrypt this text' : 'Encrypt new text'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Error/Info Section */}
+      {error && (
+        <div className="mt-2 text-sm text-center text-red-500">
+          {error}
+        </div>
+      )}
     </div>
   )
 }
